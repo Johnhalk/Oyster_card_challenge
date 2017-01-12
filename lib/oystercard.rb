@@ -1,6 +1,9 @@
+require_relative 'journey'
+require_relative 'station'
+
 class Oystercard
-attr_reader :balance, :entry_station, :exit_station
-attr_accessor :journeys, :current_journey
+attr_reader :balance
+attr_accessor :journeys, :current_journey, :journey
 
 MAX_LIMIT = 90
 MIN_LIMIT = 1
@@ -9,6 +12,7 @@ MIN_LIMIT = 1
     @balance = 0
     @in_journey = false
     @journeys = []
+    @journey
   end
 
   def top_up(money)
@@ -19,32 +23,29 @@ MIN_LIMIT = 1
   end
 
   def in_journey?
-    if entry_station == nil
-      @in_journey = false
-    else
-      @in_journey = true
-    end
+    @journey.journey_log[:entry_station] != nil && @journey.journey_log[:exit_station] == nil
   end
 
   def touch_in(entry_station)
     message = "Insufficient funds. Must top up card."
     raise message if balance < MIN_LIMIT
-    @in_journey = true
-    @entry_station = entry_station
+    @journey = Journey.new
+    @journey.start(entry_station)
   end
 
-  def touch_out(exit_station)
-    deduct(MIN_LIMIT)
-    @exit_station = exit_station
-    @in_journey = false
-    journey_log
+  def touch_out(exit_station, fare)
+    deduct(fare)
+    if @journey == nil
+      @journey = Journey.new
+      @journey.start
+    end
+    @journey.finish(exit_station)
+    journey_printer
   end
 
-  def journey_log
-    current_journey = Hash.new
-    current_journey[:entry_station] = @entry_station
-    current_journey[:exit_station] = @exit_station
-    @journeys << current_journey
+  def journey_printer
+    @journeys << @journey.journey_log
+    @journey = nil
   end
 
   private

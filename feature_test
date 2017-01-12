@@ -14,6 +14,19 @@ card.entry_station
 require './lib/oystercard'
 card = Oystercard.new
 card.top_up(10)
-station = Station.new
-station.zone
-station.name
+picadilly = Station.new("Picadilly", 1)
+victoria = Station.new("Victoria", 2)
+aldgate = Station.new("Aldgate", 1)
+card.touch_out(victoria, 3)
+card.touch_in(aldgate)
+card.touch_out(victoria, 3)
+card.touch_out(picadilly, 3)
+puts card.journeys
+
+clear
+irb
+require './lib/journey'
+journey = Journey.new
+journey.start("Victoria")
+journey.finish("Bank")
+journey.complete?
