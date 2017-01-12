@@ -5,7 +5,15 @@ card.touch_in("London Bridge")
 card.touch_out("Bank")
 card.touch_in("Clapham")
 card.touch_out("Victoria")
-card.station_history_array
+card.journeys
 card.balance
 card.in_journey?
 card.entry_station
+
+
+require './lib/oystercard'
+card = Oystercard.new
+card.top_up(10)
+station = Station.new
+station.zone
+station.name

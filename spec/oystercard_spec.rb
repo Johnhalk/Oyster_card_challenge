@@ -81,5 +81,4 @@ describe Oystercard do
       expect(card.journeys[0]).to include(:entry_station, :exit_station)
     end
   end
-
 end
